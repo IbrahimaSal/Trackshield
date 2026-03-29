@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Trackshield — 01 Badge & Popup</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+body { display:flex; }
+.popup-frame { width:340px;background:var(--surface);border:1px solid var(--border2);border-radius:16px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.6); }
+.popup-header { padding:13px 15px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between; }
+.popup-url { font-size:10px;font-family:'DM Mono',monospace;color:var(--text2);background:var(--surface2);padding:3px 8px;border-radius:5px; }
+.score-wrap { position:relative;width:76px;height:76px;flex-shrink:0; }
+.score-wrap svg { transform:rotate(-90deg); }
+.score-letter { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:700; }
+.badge-state { width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;position:relative; }
+.badge-cnt { position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;border:2px solid var(--bg); }
+.pii-box { background:rgba(255,59,92,.06);border:1px solid rgba(255,59,92,.18);border-radius:9px;padding:10px 12px;margin-bottom:12px; }
+.pii-label { font-size:10px;font-weight:600;color:var(--danger);margin-bottom:6px;display:flex;align-items:center;gap:5px; }
+.tracker-row { display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border); }
+.tracker-row:last-child { border-bottom:none; }
+.ok-box { background:var(--ok-bg);border:1px solid rgba(31,204,122,.2);border-radius:9px;padding:12px;text-align:center; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="logo-mark">
+      <svg width="18" height="18" viewBox="0 0 19 19" fill="none"><path d="M9.5 2L3 5v5c0 3.5 2.8 6.8 6.5 7.8C13.2 16.8 16 13.5 16 10V5L9.5 2z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><circle cx="9.5" cy="9.5" r="2.5" fill="white" opacity=".85"/></svg>
+    </div>
+    <span style="font-size:15px;font-weight:600;letter-spacing:-.3px;">Trackshield</span>
+  </div>
+  <div class="nav-label">Écrans</div>
+  <a class="nav-item active" href="01-badge-popup.html"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2.5" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="7" r="2.5" stroke="currentColor" stroke-width="1.2"/></svg>Badge &amp; Popup</a>
+  <a class="nav-item" href="02-trackers-live.html"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v3l2 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Trackers live<span class="nav-pill">live</span></a>
+  <a class="nav-item" href="03-carte-flux.html"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="2.5" cy="7" r="1.8" stroke="currentColor" stroke-width="1.2"/><circle cx="11.5" cy="2.5" r="1.8" stroke="currentColor" stroke-width="1.2"/><circle cx="11.5" cy="11.5" r="1.8" stroke="currentColor" stroke-width="1.2"/><path d="M4.2 7L8.5 2.5M4.2 7L8.5 11.5" stroke="currentColor" stroke-width="1.2"/></svg>Carte des flux</a>
+  <a class="nav-item" href="04-alertes.html"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L1 12h12L7 1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 5.5v3M7 10.5v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Alertes</a>
+  <a class="nav-item" href="05-rapport.html"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 5h5M4.5 7.5h5M4.5 10h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Rapport d'audit</a>
+  <a class="nav-item" href="06-parametres.html"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M7 1.5v1.2M7 11.3V12.5M1.5 7h1.2M11.3 7h1.2M3 3l.85.85M10.15 10.15L11 11M11 3l-.85.85M3.85 10.15L3 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Paramètres</a>
+  <div style="margin-top:auto;"><div class="nav-label">Statut</div><div style="padding:10px;background:var(--ok-bg);border:1px solid rgba(31,204,122,.2);border-radius:9px;"><div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ok);"><div class="live-dot"></div>Protection active</div><div style="font-size:10px;color:var(--text3);margin-top:3px;">Base trackers v24.1</div></div></div>
+</nav>
+
+<main class="main" style="flex:1;">
+  <div class="topbar">
+    <div><h1>Badge &amp; Popup principal</h1><div class="topbar-sub">Vue synthétique — clic sur l'icône Trackshield dans Chrome</div></div>
+  </div>
+
+  <!-- Badge states -->
+  <div class="stitle" style="margin-top:0;">États du badge</div>
+  <div class="card" style="display:flex;gap:32px;align-items:center;margin-bottom:32px;padding:24px 28px;">
+    <!-- Green -->
+    <div style="text-align:center;">
+      <div class="badge-state" style="background:rgba(31,204,122,.08);border:1.5px solid rgba(31,204,122,.25);margin:0 auto 8px;">
+        <svg width="24" height="24" viewBox="0 0 19 19" fill="none"><path d="M9.5 2L3 5v5c0 3.5 2.8 6.8 6.5 7.8C13.2 16.8 16 13.5 16 10V5L9.5 2z" stroke="#1FCC7A" stroke-width="1.4" stroke-linejoin="round"/><circle cx="9.5" cy="9.5" r="3" fill="#1FCC7A" opacity=".8"/></svg>
+        <div class="badge-cnt" style="background:var(--ok);">2</div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);">Score A — Sûr</div>
+    </div>
+    <!-- Amber -->
+    <div style="text-align:center;">
+      <div class="badge-state" style="background:rgba(255,176,32,.08);border:1.5px solid rgba(255,176,32,.25);margin:0 auto 8px;">
+        <svg width="24" height="24" viewBox="0 0 19 19" fill="none"><path d="M9.5 2L3 5v5c0 3.5 2.8 6.8 6.5 7.8C13.2 16.8 16 13.5 16 10V5L9.5 2z" stroke="#FFB020" stroke-width="1.4" stroke-linejoin="round"/><circle cx="9.5" cy="9.5" r="3" fill="#FFB020" opacity=".8"/></svg>
+        <div class="badge-cnt" style="background:var(--warn);">7</div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);">Score C — Attention</div>
+    </div>
+    <!-- Red -->
+    <div style="text-align:center;">
+      <div class="badge-state" style="background:rgba(255,59,92,.08);border:1.5px solid rgba(255,59,92,.25);margin:0 auto 8px;">
+        <svg width="24" height="24" viewBox="0 0 19 19" fill="none"><path d="M9.5 2L3 5v5c0 3.5 2.8 6.8 6.5 7.8C13.2 16.8 16 13.5 16 10V5L9.5 2z" stroke="#FF3B5C" stroke-width="1.4" stroke-linejoin="round"/><circle cx="9.5" cy="9.5" r="3" fill="#FF3B5C" opacity=".8"/></svg>
+        <div class="badge-cnt" style="background:var(--danger);">14</div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);">Score D — Critique</div>
+    </div>
+    <div style="flex:1;padding-left:24px;border-left:1px solid var(--border);">
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;">Le badge change de couleur et de compteur en temps réel selon le niveau de risque détecté sur la page courante. Vert = aucune collecte problématique, orange = trackers détectés, rouge = PII exposées.</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:28px;align-items:flex-start;">
+    <!-- Popup danger -->
+    <div>
+      <div class="stitle">Popup — site problématique</div>
+      <div class="popup-frame">
+        <div class="popup-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="logo-mark" style="width:24px;height:24px;border-radius:6px;"><svg width="12" height="12" viewBox="0 0 19 19" fill="none"><path d="M9.5 2L3 5v5c0 3.5 2.8 6.8 6.5 7.8C13.2 16.8 16 13.5 16 10V5L9.5 2z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+            <span style="font-size:13px;font-weight:600;">Trackshield</span>
+          </div>
+          <div class="popup-url">siteauhasard.com</div>
+        </div>
+        <div style="padding:14px 15px;">
+          <!-- Score -->
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:13px;">
+            <div class="score-wrap">
+              <svg width="76" height="76" viewBox="0 0 76 76">
+                <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(255,59,92,.12)" stroke-width="7"/>
+                <circle cx="38" cy="38" r="32" fill="none" stroke="#FF3B5C" stroke-width="7" stroke-dasharray="101 100" stroke-linecap="round"/>
+              </svg>
+              <div class="score-letter" style="color:var(--danger);">D</div>
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:600;margin-bottom:5px;">Score RGPD : D</div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:8px;">Collectes importantes détectées.</div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span class="badge b-danger">14 trackers</span>
+                <span class="badge b-warn">2 PII exposées</span>
+              </div>
+            </div>
+          </div>
+          <!-- PII -->
+          <div class="pii-box">
+            <div class="pii-label">
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1L1 9.5h9L5.5 1z" stroke="#FF3B5C" stroke-width="1.2"/><path d="M5.5 5v2M5.5 8v.4" stroke="#FF3B5C" stroke-width="1.3" stroke-linecap="round"/></svg>
+              Données personnelles transmises
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span class="mono" style="font-size:10px;color:var(--danger);">+336••••5678</span>
+              <span style="font-size:10px;color:var(--text3);">→ pixel.facebook.com</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span class="mono" style="font-size:10px;color:var(--warn);">j••••@gmail.com</span>
+              <span style="font-size:10px;color:var(--text3);">→ doubleclick.net</span>
+            </div>
+          </div>
+          <!-- Trackers -->
+          <div class="label" style="margin-bottom:8px;">Trackers actifs</div>
+          <div class="tracker-row">
+            <div class="co" style="background:rgba(234,67,53,.12);color:#EA4335;">G</div>
+            <div style="flex:1;"><div style="font-size:12px;font-weight:500;">Google Analytics</div><div style="font-size:10px;color:var(--text3);">analytics.google.com</div></div>
+            <span class="badge b-info">Analytique</span>
+          </div>
+          <div class="tracker-row">
+            <div class="co" style="background:rgba(24,119,242,.12);color:#1877F2;">f</div>
+            <div style="flex:1;"><div style="font-size:12px;font-weight:500;">Meta Pixel</div><div style="font-size:10px;color:var(--text3);">pixel.facebook.com</div></div>
+            <span class="badge b-danger">PII</span>
+          </div>
+          <div class="tracker-row" style="border-bottom:none;">
+            <div class="co" style="background:rgba(234,67,53,.12);color:#EA4335;">DC</div>
+            <div style="flex:1;"><div style="font-size:12px;font-weight:500;">DoubleClick</div><div style="font-size:10px;color:var(--text3);">doubleclick.net</div></div>
+            <span class="badge b-warn">Pub</span>
+          </div>
+        </div>
+        <!-- Actions -->
+        <div style="padding:8px 15px 14px;display:flex;gap:8px;">
+          <button class="btn btn-bb" style="flex:1;font-size:11px;">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 6.5C1 6.5 3 3 6.5 3S12 6.5 12 6.5 10 10 6.5 10 1 6.5 1 6.5z" stroke="white" stroke-width="1.2"/><circle cx="6.5" cy="6.5" r="2" stroke="white" stroke-width="1.2"/></svg>
+            Voir les flux
+          </button>
+          <button class="btn btn-ghost" style="font-size:11px;">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1.5" y="1" width="9" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 4h5M3.5 6.5h5M3.5 9h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Rapport
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popup safe -->
+    <div>
+      <div class="stitle">Popup — site sûr</div>
+      <div class="popup-frame">
+        <div class="popup-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="logo-mark" style="width:24px;height:24px;border-radius:6px;"><svg width="12" height="12" viewBox="0 0 19 19" fill="none"><path d="M9.5 2L3 5v5c0 3.5 2.8 6.8 6.5 7.8C13.2 16.8 16 13.5 16 10V5L9.5 2z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+            <span style="font-size:13px;font-weight:600;">Trackshield</span>
+          </div>
+          <div class="popup-url">wikipedia.org</div>
+        </div>
+        <div style="padding:14px 15px;">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:13px;">
+            <div class="score-wrap">
+              <svg width="76" height="76" viewBox="0 0 76 76">
+                <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(31,204,122,.12)" stroke-width="7"/>
+                <circle cx="38" cy="38" r="32" fill="none" stroke="#1FCC7A" stroke-width="7" stroke-dasharray="186 15" stroke-linecap="round"/>
+              </svg>
+              <div class="score-letter" style="color:var(--ok);">A</div>
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:600;margin-bottom:5px;">Score RGPD : A</div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:8px;">Aucune collecte problématique.</div>
+              <div style="display:flex;gap:5px;">
+                <span class="badge b-ok">1 tracker</span>
+                <span class="badge b-ok">0 PII</span>
+              </div>
+            </div>
+          </div>
+          <div class="ok-box">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="display:block;margin:0 auto 6px;"><path d="M4 10l4 4 8-8" stroke="#1FCC7A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div style="font-size:12px;color:var(--ok);font-weight:500;">Ce site respecte votre vie privée</div>
+          </div>
+        </div>
+        <div style="padding:8px 15px 14px;">
+          <button class="btn btn-ghost" style="width:100%;font-size:11px;">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 6.5C1 6.5 3 3 6.5 3S12 6.5 12 6.5 10 10 6.5 10 1 6.5 1 6.5z" stroke="currentColor" stroke-width="1.2"/><circle cx="6.5" cy="6.5" r="2" stroke="currentColor" stroke-width="1.2"/></svg>
+            Voir le détail
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotations -->
+    <div style="flex:1;padding-left:32px;border-left:1px solid var(--border);">
+      <div class="stitle" style="margin-top:0;">Annotations développeur</div>
+      <div class="card2" style="margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;color:var(--info);margin-bottom:6px;">Score RGPD — calcul</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;">Trackers 30% + PII 35% + Cookies 20% + Pays serveurs 15%. Seuils : A ≥90 · B ≥75 · C ≥55 · D ≥35 · F &lt;35</div>
+      </div>
+      <div class="card2" style="margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:600;color:var(--warn);margin-bottom:6px;">Badge — chrome.action API</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;">Mise à jour via <span class="mono" style="font-size:10px;">chrome.action.setBadgeText</span> et <span class="mono" style="font-size:10px;">setBadgeBackgroundColor</span> depuis le background service worker.</div>
+      </div>
+      <div class="card2">
+        <div style="font-size:11px;font-weight:600;color:var(--ok);margin-bottom:6px;">Popup — React + Vite</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;">Rendu React dans <span class="mono" style="font-size:10px;">popup.html</span>. Largeur fixe 340px. Communication avec le background via <span class="mono" style="font-size:10px;">chrome.runtime.sendMessage</span>.</div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

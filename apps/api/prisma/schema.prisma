@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  syncConsent  Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  sessions     Session[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String?
+  domain    String
+  url       String
+  grade     String?
+  score     Float?
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trackers  Tracker[]
+  piis      PiiDetection[]
+}
+
+model Tracker {
+  id          String  @id @default(uuid())
+  sessionId   String
+  domain      String
+  category    String
+  company     String
+  requestCount Int    @default(1)
+  session     Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model PiiDetection {
+  id           String   @id @default(uuid())
+  sessionId    String
+  type         String
+  maskedValue  String
+  destination  String
+  detectedAt   DateTime @default(now())
+  session      Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}

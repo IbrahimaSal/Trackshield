@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "Trackshield",
+  "version": "0.1.0",
+  "description": "Témoin transparent de votre navigation — détecte les collectes de données personnelles.",
+  "icons": {
+    "16": "icons/shield-16.png",
+    "48": "icons/shield-48.png",
+    "128": "icons/shield-128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/shield-16.png",
+      "48": "icons/shield-48.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "permissions": [
+    "webRequest",
+    "storage",
+    "notifications",
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": ["<all_urls>"]
+}
