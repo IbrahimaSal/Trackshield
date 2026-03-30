@@ -72,6 +72,9 @@ importers:
       '@types/bcryptjs':
         specifier: ^3.0.0
         version: 3.0.0
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
       '@types/passport-jwt':
         specifier: ^4.0.1
         version: 4.0.1
@@ -150,6 +153,10 @@ importers:
         version: 5.9.3
 
   packages/tracker-lists:
+    dependencies:
+      '@trackshield/shared-types':
+        specifier: workspace:*
+        version: link:../shared-types
     devDependencies:
       tsx:
         specifier: ^4.7.0
