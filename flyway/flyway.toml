@@ -1,11 +1,12 @@
 # Flyway configuration — Trackshield
-# Les credentials sont lus depuis les variables d'environnement :
-#   FLYWAY_URL      = jdbc:postgresql://localhost:5432/trackshield
-#   FLYWAY_USER     = trackshield
-#   FLYWAY_PASSWORD = trackshield
-#
-# Ces variables sont définies dans .env.local via le wrapper scripts/flyway-run.sh
+# Les credentials sont lus depuis .env.local via le wrapper scripts/flyway-run.sh
 # qui convertit automatiquement DATABASE_URL → JDBC format.
+#
+# Structure des dossiers :
+#   flyway/sql/   → migrations V{N}__description.sql  (appliquées par Flyway)
+#   flyway/undo/  → scripts U{N}__description.sql     (exécution manuelle uniquement)
+#                   Flyway OSS ne supporte pas l'undo automatique (feature Teams)
+#                   Pour rollback : psql $DATABASE_URL -f flyway/undo/U{N}__xxx.sql
 
 [flyway]
 locations = ["filesystem:flyway/sql"]
