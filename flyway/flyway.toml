@@ -1,0 +1,15 @@
+# Flyway configuration — Trackshield
+# Les credentials sont lus depuis les variables d'environnement :
+#   FLYWAY_URL      = jdbc:postgresql://localhost:5432/trackshield
+#   FLYWAY_USER     = trackshield
+#   FLYWAY_PASSWORD = trackshield
+#
+# Ces variables sont définies dans .env.local via le wrapper scripts/flyway-run.sh
+# qui convertit automatiquement DATABASE_URL → JDBC format.
+
+[flyway]
+locations = ["filesystem:flyway/sql"]
+table = "flyway_schema_history"
+baselineOnMigrate = false
+outOfOrder = false
+validateOnMigrate = true

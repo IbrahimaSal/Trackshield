@@ -7,11 +7,15 @@
     "test": "turbo test",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
-    "db:migrate": "flyway migrate",
-    "db:info": "flyway info",
+    "db:migrate": "./scripts/flyway-run.sh migrate",
+    "db:info": "./scripts/flyway-run.sh info",
+    "db:validate": "./scripts/flyway-run.sh validate",
+    "db:rollback": "./scripts/flyway-run.sh undo",
+    "db:repair": "./scripts/flyway-run.sh repair",
     "db:seed": "pnpm --filter api prisma db seed",
     "db:studio": "pnpm --filter api prisma studio",
     "db:generate": "pnpm --filter api prisma generate",
+    "install:hooks": "./scripts/install-hooks.sh",
     "lists:compile": "pnpm --filter tracker-lists compile"
   },
   "devDependencies": {
