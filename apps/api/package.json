@@ -17,6 +17,7 @@
     "@nestjs/platform-express": "^10.3.0",
     "@prisma/client": "^5.14.0",
     "@trackshield/shared-types": "workspace:*",
+    "bcryptjs": "^3.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "eventemitter2": "^6.4.9",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "@nestjs/cli": "^10.3.0",
     "@nestjs/testing": "^10.3.0",
+    "@types/bcryptjs": "^3.0.0",
     "@types/passport-jwt": "^4.0.1",
     "prisma": "^5.14.0",
     "typescript": "^5.4.0",
