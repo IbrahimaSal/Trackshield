@@ -34,3 +34,27 @@ class ScoreResponse(BaseModel):
     grade: str
     score: float
     breakdown: ScoreBreakdownSchema
+
+
+class TrackerMatchSchema(BaseModel):
+    domain: str
+    category: str
+    company: str
+
+
+class ReportRequest(BaseModel):
+    url: str
+    trackers: list[TrackerMatchSchema] = []
+    piis: list[PiiMatchSchema] = []
+    cookie_count: int = 0
+    non_eu_destination_ratio: float = 0.0
+
+
+class ReportResponse(BaseModel):
+    url: str
+    grade: str
+    score: float
+    trackers: list[TrackerMatchSchema]
+    piis: list[PiiMatchSchema]
+    summary: str
+    recommendations: list[str]
