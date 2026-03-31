@@ -30,11 +30,15 @@
   "devDependencies": {
     "@nestjs/cli": "^10.3.0",
     "@nestjs/testing": "^10.3.0",
+    "@swc/core": "^1.15.21",
     "@types/bcryptjs": "^3.0.0",
     "@types/express": "^5.0.6",
     "@types/passport-jwt": "^4.0.1",
+    "@types/supertest": "^7.2.0",
     "prisma": "^5.14.0",
+    "supertest": "^7.2.2",
     "typescript": "^5.4.0",
+    "unplugin-swc": "^1.5.9",
     "vitest": "^1.6.0"
   }
 }

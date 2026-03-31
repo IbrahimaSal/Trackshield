@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { EventsModule } from './events/events.module.js'
+import { SyncModule } from './sync/sync.module.js'
 import { UsersModule } from './users/users.module.js'
 
 @Module({
@@ -12,6 +13,7 @@ import { UsersModule } from './users/users.module.js'
     }),
     UsersModule,
     EventsModule,
+    SyncModule,
   ],
 })
 export class AppModule {}
