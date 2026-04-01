@@ -14,6 +14,7 @@ interface AlertsState {
   addAlert: (pii: PiiDetection) => void
   markRead: (id: string) => void
   markAllRead: () => void
+  clearAlerts: () => void
 }
 
 export const useAlertsStore = create<AlertsState>((set) => ({
@@ -31,4 +32,5 @@ export const useAlertsStore = create<AlertsState>((set) => ({
     alerts: s.alerts.map(a => ({ ...a, read: true })),
     unreadCount: 0,
   })),
+  clearAlerts: () => set({ alerts: [], unreadCount: 0 }),
 }))
