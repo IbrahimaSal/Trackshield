@@ -13,11 +13,13 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "compile": "tsx scripts/compile-lists.ts"
+    "compile": "tsx scripts/compile-lists.ts",
+    "test": "vitest run"
   },
   "devDependencies": {
     "tsx": "^4.7.0",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.1"
   },
   "dependencies": {
     "@trackshield/shared-types": "workspace:*"
