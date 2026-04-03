@@ -8,6 +8,8 @@ const trackerMatcher = new TrackerMatcherService()
 const badgeManager = new BadgeManager()
 const syncClient = new SyncClient()
 
+void trackerMatcher.init()
+
 chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
     if (!details.tabId || details.tabId < 0) return

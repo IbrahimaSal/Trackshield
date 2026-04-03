@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 import { copyFileSync, mkdirSync } from 'fs'
 
+const TRACKER_DATA_SRC = resolve(__dirname, '../../packages/tracker-lists/data')
+const TRACKER_DATA_DEST = resolve(__dirname, 'dist/data')
+
 export default defineConfig({
   plugins: [
     react(),
@@ -16,6 +19,10 @@ export default defineConfig({
         try {
           mkdirSync(resolve(__dirname, 'dist/popup'), { recursive: true })
         } catch {}
+        mkdirSync(TRACKER_DATA_DEST, { recursive: true })
+        for (const file of ['easylist.json', 'disconnect.json', 'easyprivacy.json']) {
+          copyFileSync(resolve(TRACKER_DATA_SRC, file), resolve(TRACKER_DATA_DEST, file))
+        }
       },
     },
   ],

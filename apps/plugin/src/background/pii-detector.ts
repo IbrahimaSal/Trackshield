@@ -1,12 +1,24 @@
 import type { PiiDetection, PiiType } from '@trackshield/shared-types'
+import { KNOWN_PARAMS } from './known-params.js'
 
+// Regex heuristiques — utilisées uniquement si aucun paramètre connu ne match
 const PII_PATTERNS: Record<PiiType, RegExp> = {
   EMAIL: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
-  TEL: /(?:\+33|0033|0)[1-9](?:[0-9]{8}|\s[0-9]{2}(?:\s[0-9]{2}){3})/g,
-  COMPORTEMENT: /(?:pageview|session_id|_ga|_gid)=[^&\s]+/g,
-  ID_PUB: /(?:_fbp|gclid|fbclid|_pinterest_ct_ua)=[^&\s]+/g,
+
+  // TEL : uniquement mobiles français (06/07) ou +33 6/7 — exclut 01-05/08/09
+  // Doit être précédé d'un séparateur (=, &, espace, début) pour éviter les paths
+  TEL: /(?<=[=&\s?]|^)(?:(?:\+33|0033)\s?[67](?:\s?\d{2}){4}|0[67]\d{8})(?=[&\s#]|$)/g,
+
+  COMPORTEMENT: /(?:pageview|session_id)=[^&\s]+/g,
+
+  // ID_PUB regex : uniquement les paramètres non couverts par KNOWN_PARAMS (ex: pinterest)
+  ID_PUB: /(?:_pinterest_ct_ua)=[^&\s]+/g,
+
   DEVICE: /(?:canvas|webgl|timezone|resolution)=[^&\s]+/g,
-  LOC: /(?:lat|lng|latitude|longitude)=[-\d.]+/g,
+
+  // LOC : coordonnées GPS réalistes — lat ∈ [-90,90], lon ∈ [-180,180], exclut 0,0
+  // Format attendu : lat=XX.XXXX&... — nécessite un point décimal pour filtrer les entiers bruts
+  LOC: /(?:lat|latitude)=(-?(?:[0-8]?\d(?:\.\d+)|90(?:\.0+)?))(?=[&\s]|$).*?(?:lng|lon|longitude)=(-?(?:1[0-7]\d(?:\.\d+)?|\d{1,2}(?:\.\d+)?|180(?:\.0+)?))(?=[&\s#]|$)/g,
 }
 
 function extractDomain(url: string): string {
@@ -29,21 +41,55 @@ function mask(value: string, type: PiiType): string {
   return `${value.slice(0, 4)}••••`
 }
 
+function maskParamValue(value: string): string {
+  if (value.length <= 4) return '••••'
+  return `${value.slice(0, 4)}••••`
+}
+
 export class PiiDetector {
-  scan(url: string, body?: string): PiiDetection[] {
-    const target = url + (body ?? '')
+  scan(url: string, body?: string, knownValues?: Set<string>): PiiDetection[] {
     const destination = extractDomain(url)
     const detections: PiiDetection[] = []
 
+    // ─── 1. Paramètres URL connus (certainty: high) — prioritaires ───────────
+    try {
+      const parsed = new URL(url)
+      for (const [paramName, entry] of Object.entries(KNOWN_PARAMS)) {
+        const value = parsed.searchParams.get(paramName)
+        if (value !== null) {
+          detections.push({
+            type: entry.type,
+            maskedValue: maskParamValue(value),
+            destination,
+            timestamp: Date.now(),
+            certainty: 'high',
+            source: 'url',
+            label: entry.label,
+            description: entry.description,
+          })
+        }
+      }
+    } catch {
+      // URL malformée → skip la phase paramètres connus
+    }
+
+    // ─── 2. Regex heuristiques — avec élévation si valeur connue ─────────────
+    let decodedUrl = url
+    try { decodedUrl = decodeURIComponent(url) } catch { /* keep raw */ }
+    const target = decodedUrl + (body ?? '')
     for (const [type, pattern] of Object.entries(PII_PATTERNS)) {
       const regex = new RegExp(pattern.source, pattern.flags)
       let match: RegExpExecArray | null
       while ((match = regex.exec(target)) !== null) {
+        const rawValue = match[0]
+        const isKnown = knownValues !== undefined && knownValues.size > 0 &&
+          [...knownValues].some((v) => rawValue.includes(v) || v.includes(rawValue))
         detections.push({
           type: type as PiiType,
-          maskedValue: mask(match[0], type as PiiType),
+          maskedValue: mask(rawValue, type as PiiType),
           destination,
           timestamp: Date.now(),
+          ...(isKnown ? { certainty: 'high' as const, source: 'form' as const } : {}),
         })
       }
     }

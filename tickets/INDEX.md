@@ -27,3 +27,9 @@
 | [TS-011](TS-011.md) | Plugin — Vue Paramètres (SettingsView) | Plugin / Vues | 3.6 | P1 | Fait |
 | [TS-012](TS-012.md) | tracker-lists — Compilation EasyList / Disconnect / EasyPrivacy | tracker-lists | 11.2, 11.3, 11.4, 11.5 | P0 | Fait |
 | [TS-015](TS-015.md) | API NestJS — Tests HTTP controllers (Supertest + SWC) | API NestJS | — | P0 | Fait |
+
+## Bugs détectés
+
+| ID | Description | Anomalie | Priorité | Statut | Détecté le |
+|---|---|---|---|---|---|
+| [BUG-001](BUG-001.md) | shared-types — PiiDetection manque certainty/source/label/description | CHECK 2 — typecheck plugin | P1 | À corriger | 2026-04-03 |

@@ -27,5 +27,14 @@ const observer = new MutationObserver(() => {
   observeForms()
 })
 
-observer.observe(document.body, { childList: true, subtree: true })
-observeForms()
+function startObserving(): void {
+  observer.observe(document.body, { childList: true, subtree: true })
+  observeForms()
+}
+
+// document_start : document.body peut être null — attendre DOMContentLoaded
+if (document.body) {
+  startObserving()
+} else {
+  document.addEventListener('DOMContentLoaded', startObserving)
+}
