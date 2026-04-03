@@ -33,7 +33,14 @@ async function persistActiveTabState(tabId: number, state: TabState): Promise<vo
 export class BadgeManager {
   update(tabId: number, data: { piis: PiiDetection[]; tracker: TrackerMatch | null }): void {
     const current = tabStates.get(tabId) ?? { trackers: [], piis: [] }
-    if (data.tracker) current.trackers.push(data.tracker)
+    if (data.tracker) {
+      const existing = current.trackers.find((t) => t.domain === data.tracker!.domain)
+      if (existing) {
+        existing.requestCount++
+      } else {
+        current.trackers.push(data.tracker)
+      }
+    }
     current.piis.push(...data.piis)
     tabStates.set(tabId, current)
     this.render(tabId, current)

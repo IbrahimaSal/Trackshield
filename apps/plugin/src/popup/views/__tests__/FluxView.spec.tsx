@@ -72,4 +72,34 @@ describe('FluxView', () => {
     fireEvent.click(screen.getByText(/retour/i))
     expect(mockNavigate).toHaveBeenCalledWith('main')
   })
+
+  it("affiche ×2 pour deux détections identiques vers la même destination", () => {
+    const DUP: PiiDetection = { ...PII_EMAIL }
+    useSessionStore.setState({ piis: [PII_EMAIL, DUP] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.getByText('×2')).toBeInTheDocument()
+  })
+
+  it("n'affiche qu'une seule ligne pour des PIIs identiques vers la même destination", () => {
+    const DUP: PiiDetection = { ...PII_EMAIL }
+    useSessionStore.setState({ piis: [PII_EMAIL, DUP] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.getAllByText('j••••@gmail.com')).toHaveLength(1)
+  })
+
+  it("n'affiche pas ×1 pour les entrées non dupliquées", () => {
+    useSessionStore.setState({ piis: [PII_EMAIL] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.queryByText('×1')).not.toBeInTheDocument()
+  })
+
+  it("trie les entrées par nombre d'occurrences décroissant dans un groupe", () => {
+    const DUP_EMAIL: PiiDetection = { ...PII_EMAIL }
+    useSessionStore.setState({ piis: [PII_PHONE, PII_EMAIL, DUP_EMAIL] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    // EMAIL est dupliqué (×2), il doit apparaître avant PHONE (pas de compteur)
+    const container = screen.getByText('j••••@gmail.com').closest('[class]')!
+    const phoneEl = screen.getByText('+336••••5678').closest('[class]')!
+    expect(container.compareDocumentPosition(phoneEl)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+  })
 })

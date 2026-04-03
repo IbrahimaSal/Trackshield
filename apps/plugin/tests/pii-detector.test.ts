@@ -133,3 +133,48 @@ describe('PiiDetector — élévation certainty via knownValues', () => {
     expect(results.some((r) => r.type === 'EMAIL')).toBe(true)
   })
 })
+
+// ─── DEVICE — Empreinte navigateur ────────────────────────────────────────
+
+describe('PiiDetector — DEVICE', () => {
+  it("détecte un paramètre canvas (fingerprinting)", () => {
+    const results = detector.scan('https://tracker.example.com?canvas=abc123def456')
+    expect(results.some((r) => r.type === 'DEVICE')).toBe(true)
+  })
+
+  it("détecte un paramètre timezone (fingerprinting)", () => {
+    const results = detector.scan('https://analytics.example.com?timezone=Europe%2FParis')
+    expect(results.some((r) => r.type === 'DEVICE')).toBe(true)
+  })
+
+  it("masque la valeur DEVICE sans exposer la donnée brute", () => {
+    const results = detector.scan('https://example.com?resolution=1920x1080')
+    const device = results.find((r) => r.type === 'DEVICE')!
+    expect(device.maskedValue).not.toContain('1920x1080')
+    expect(device.maskedValue).toContain('••••')
+  })
+})
+
+// ─── SHOULD_NOT_DETECT — Faux positifs à éviter ───────────────────────────
+
+describe('PiiDetector — SHOULD_NOT_DETECT (faux positifs)', () => {
+  it("ne détecte pas une version semver dans une URL", () => {
+    const results = detector.scan('https://cdn.example.com/lib/3.2.1/bundle.js')
+    expect(results).toHaveLength(0)
+  })
+
+  it("ne détecte pas un code postal dans un paramètre", () => {
+    const results = detector.scan('https://example.com?cp=75008&city=Paris')
+    expect(results).toHaveLength(0)
+  })
+
+  it("ne détecte pas un prix dans une URL e-commerce", () => {
+    const results = detector.scan('https://shop.example.com/product?price=29.99&currency=EUR')
+    expect(results).toHaveLength(0)
+  })
+
+  it("ne détecte pas un ID numérique court comme un téléphone", () => {
+    const results = detector.scan('https://api.example.com/users/12345')
+    expect(results.filter((r) => r.type === 'TEL')).toHaveLength(0)
+  })
+})

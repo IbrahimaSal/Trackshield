@@ -12,6 +12,7 @@
 | [TS-019](TS-019.md) | Plugin — Affinage regex PII (réduire faux positifs) | Plugin / Background | — | P1 | À faire |
 | [TS-020](TS-020.md) | Plugin — Détection via localStorage et cookies first-party | Plugin / Background | — | P1 | À faire |
 | [TS-022](TS-022.md) | Plugin — Détection cookies tiers dans headers réseau | Plugin / Background | — | P1 | À faire |
+| [TS-023](TS-023.md) | Plugin — Conformité visuelle popup aux specs design | Plugin / Vues | — | P1 | À faire |
 | [TS-013](TS-013.md) | CI/CD — Pipeline de déploiement automatique | Infrastructure & CI/CD | 12.3 | P2 | À faire |
 | [TS-021](TS-021.md) | Cadrage — Détection de fingerprinting navigateur | Plugin / Background | — | P2 | Cadrage requis |
 | [TS-001](TS-001.md) | API NestJS — PrismaService (connexion PostgreSQL) | API NestJS | 8.6 | P0 | Fait |

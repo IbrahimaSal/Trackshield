@@ -9,12 +9,31 @@ interface FluxViewProps {
   onNavigate: (view: View) => void
 }
 
-function groupByDestination(piis: PiiDetection[]): Map<string, PiiDetection[]> {
-  return piis.reduce((acc, pii) => {
-    const group = acc.get(pii.destination) ?? []
-    acc.set(pii.destination, [...group, pii])
-    return acc
-  }, new Map<string, PiiDetection[]>())
+interface GroupedEntry {
+  pii: PiiDetection
+  count: number
+}
+
+function groupByDestination(piis: PiiDetection[]): Map<string, GroupedEntry[]> {
+  const byDest = new Map<string, Map<string, GroupedEntry>>()
+
+  for (const pii of piis) {
+    if (!byDest.has(pii.destination)) byDest.set(pii.destination, new Map())
+    const destMap = byDest.get(pii.destination)!
+    const existing = destMap.get(pii.maskedValue)
+    if (existing) {
+      existing.count++
+    } else {
+      destMap.set(pii.maskedValue, { pii, count: 1 })
+    }
+  }
+
+  const result = new Map<string, GroupedEntry[]>()
+  for (const [dest, valueMap] of byDest.entries()) {
+    const entries = Array.from(valueMap.values()).sort((a, b) => b.count - a.count)
+    result.set(dest, entries)
+  }
+  return result
 }
 
 export default function FluxView({ onNavigate }: FluxViewProps): JSX.Element {
@@ -35,16 +54,19 @@ export default function FluxView({ onNavigate }: FluxViewProps): JSX.Element {
         <p className="text-xs text-white/40 mt-1">Aucune donnée transmise détectée.</p>
       ) : (
         <div className="flex flex-col gap-3">
-          {Array.from(grouped.entries()).map(([destination, detections]) => (
+          {Array.from(grouped.entries()).map(([destination, entries]) => (
             <div key={destination}>
               <div className="text-[10px] font-semibold text-white/60 mb-1.5 truncate">
                 {destination}
               </div>
               <div className="flex flex-col gap-1 pl-2 border-l border-border">
-                {detections.map((detection, i) => (
+                {entries.map(({ pii, count }, i) => (
                   <div key={i} className="flex items-center gap-2">
-                    <MaskedValue value={detection.maskedValue} severity={PII_SEVERITY[detection.type]} />
-                    <PiiTag type={detection.type} />
+                    <MaskedValue value={pii.maskedValue} severity={PII_SEVERITY[pii.type]} />
+                    <PiiTag type={pii.type} />
+                    {count > 1 && (
+                      <span className="text-[9px] text-white/40 ml-auto">×{count}</span>
+                    )}
                   </div>
                 ))}
               </div>

@@ -16,6 +16,13 @@ const CATEGORY_SEVERITY = {
   fingerprinting: 'fingerprint',
 } as const
 
+const CATEGORY_COLOR: Record<TrackerMatch['category'], string> = {
+  advertising: '#FFB020',
+  analytics:   '#3B9EFF',
+  social:      '#FF5FA8',
+  fingerprinting: '#FF3B5C',
+}
+
 interface TrackerRowProps {
   tracker: TrackerMatch
 }
@@ -23,7 +30,7 @@ interface TrackerRowProps {
 export function TrackerRow({ tracker }: TrackerRowProps): JSX.Element {
   return (
     <div className="flex items-center gap-2.5 py-1.5 border-b border-border last:border-0">
-      <CompanyAvatar initials={tracker.company.slice(0, 2).toUpperCase()} color="#3B9EFF" />
+      <CompanyAvatar initials={tracker.company.slice(0, 1).toUpperCase()} color={CATEGORY_COLOR[tracker.category]} />
       <div className="flex-1 min-w-0">
         <div className="text-xs font-medium truncate">{tracker.company}</div>
         <div className="text-[10px] text-white/40 truncate">{tracker.domain}</div>

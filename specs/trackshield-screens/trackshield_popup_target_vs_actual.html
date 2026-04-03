@@ -1,0 +1,321 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+.wrap {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  padding: 1.5rem 1rem;
+  font-family: 'DM Sans', sans-serif;
+  flex-wrap: wrap;
+}
+
+.col { display: flex; flex-direction: column; gap: 8px; }
+.col-label {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .07em;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.popup {
+  width: 340px;
+  background: #0E1118;
+  border: 1px solid rgba(255,255,255,.11);
+  border-radius: 16px;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.popup-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 15px 11px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  background: #141720;
+}
+.logo-mark {
+  width: 24px; height: 24px; border-radius: 6px;
+  background: linear-gradient(135deg, #004D98 40%, #A50044);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.popup-title { font-size: 13px; font-weight: 600; color: #EEF0F8; }
+.url-chip {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: #8B90A8; background: #1A1E2A;
+  padding: 3px 8px; border-radius: 5px;
+}
+
+.popup-body { padding: 14px 15px; }
+
+.score-row { display: flex; align-items: center; gap: 14px; margin-bottom: 13px; }
+.ring-wrap { position: relative; width: 76px; height: 76px; flex-shrink: 0; }
+.ring-wrap svg { transform: rotate(-90deg); }
+.ring-letter {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px; font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.score-text { font-size: 15px; font-weight: 600; color: #EEF0F8; margin-bottom: 4px; }
+.score-sub { font-size: 11px; color: #8B90A8; line-height: 1.5; margin-bottom: 8px; }
+.badges { display: flex; gap: 5px; flex-wrap: wrap; }
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: 100px;
+  font-size: 10px; font-weight: 600;
+}
+.b-ok   { background: rgba(31,204,122,.10); color: #1FCC7A; }
+.b-warn { background: rgba(255,176,32,.10);  color: #FFB020; }
+.b-red  { background: rgba(255,59,92,.10);   color: #FF3B5C; }
+.b-blue { background: rgba(59,158,255,.10);  color: #3B9EFF; }
+
+.ok-box {
+  background: rgba(31,204,122,.08);
+  border: 1px solid rgba(31,204,122,.2);
+  border-radius: 9px; padding: 11px; text-align: center;
+  margin-bottom: 0;
+}
+.ok-check { display: block; margin: 0 auto 5px; }
+
+.section-label {
+  font-size: 10px; font-weight: 600; color: #4E5368;
+  text-transform: uppercase; letter-spacing: .08em;
+  margin-bottom: 8px;
+}
+.tracker-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.tracker-row:last-child { border-bottom: none; }
+.co {
+  width: 30px; height: 30px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.tracker-info { flex: 1; }
+.tracker-name { font-size: 12px; font-weight: 500; color: #EEF0F8; }
+.tracker-domain { font-size: 10px; color: #4E5368; font-family: 'DM Mono', monospace; }
+
+.popup-actions {
+  padding: 8px 15px 14px;
+  display: flex; gap: 8px;
+}
+.btn-primary {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 14px; border-radius: 8px;
+  background: #004D98; color: #fff;
+  font-size: 11px; font-weight: 500;
+  border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-ghost {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 14px; border-radius: 8px;
+  background: #1A1E2A; color: #8B90A8;
+  font-size: 11px; font-weight: 500;
+  border: 1px solid rgba(255,255,255,.11); cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.diff-list {
+  display: flex; flex-direction: column; gap: 8px;
+  max-width: 300px;
+}
+.diff-item {
+  display: flex; gap: 8px; align-items: flex-start;
+  font-size: 12px; line-height: 1.5;
+  color: var(--color-text-primary);
+}
+.diff-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  margin-top: 4px; flex-shrink: 0;
+}
+.diff-label { font-weight: 500; }
+.diff-sub { color: var(--color-text-secondary); font-size: 11px; margin-top: 1px; }
+</style>
+
+<div class="wrap">
+
+  <div class="col">
+    <div class="col-label">Ce que tu vois actuellement</div>
+    <div style="width:340px;background:#0a0a0a;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;padding:14px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <div style="width:16px;height:16px;border-radius:50%;border:2px solid #1FCC7A;flex-shrink:0;"></div>
+        <span style="color:#EEF0F8;font-size:13px;font-weight:600;">Trackshield</span>
+        <span style="font-family:'DM Mono',monospace;font-size:10px;color:#666;">fr.yahoo.com</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        <div style="width:80px;height:80px;border-radius:50%;border:5px solid #1FCC7A;flex-shrink:0;background:transparent;"></div>
+        <div>
+          <div style="font-size:14px;color:#EEF0F8;font-weight:600;">Score RGPD : A</div>
+          <div style="font-size:12px;color:#888;margin-top:4px;">Aucune collecte problématique.</div>
+          <div style="display:flex;gap:6px;margin-top:8px;">
+            <span style="background:rgba(255,176,32,.15);color:#FFB020;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:600;">3 trackers</span>
+            <span style="background:rgba(31,204,122,.08);color:#1FCC7A;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:600;border:1px solid rgba(31,204,122,.3);">0 PII exposées</span>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:#444;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Trackers actifs</div>
+      <div style="background:rgba(59,158,255,.08);padding:7px 10px;border-radius:6px;margin-bottom:4px;">
+        <div style="font-size:11px;color:#3B9EFF;font-weight:600;">GO</div>
+        <div style="font-size:11px;color:#8B90A8;">google-analytics</div>
+        <div style="font-size:10px;color:#4E5368;font-family:'DM Mono',monospace;">region1.google-analytics.com</div>
+        <div style="margin-top:4px;"><span style="background:rgba(59,158,255,.15);color:#3B9EFF;padding:2px 7px;border-radius:100px;font-size:10px;">Analytique</span></div>
+      </div>
+      <div style="background:rgba(59,158,255,.08);padding:7px 10px;border-radius:6px;margin-bottom:4px;">
+        <div style="font-size:11px;color:#3B9EFF;font-weight:600;">YA</div>
+        <div style="font-size:11px;color:#8B90A8;">yahoo</div>
+        <div style="font-size:10px;color:#4E5368;font-family:'DM Mono',monospace;">geo.yahoo.com</div>
+        <div style="margin-top:4px;"><span style="background:rgba(59,158,255,.15);color:#3B9EFF;padding:2px 7px;border-radius:100px;font-size:10px;">Analytique</span></div>
+      </div>
+      <div style="background:rgba(255,176,32,.05);padding:7px 10px;border-radius:6px;margin-bottom:12px;">
+        <div style="font-size:11px;color:#FFB020;font-weight:600;">YA</div>
+        <div style="font-size:11px;color:#8B90A8;">yahoo</div>
+        <div style="font-size:10px;color:#4E5368;font-family:'DM Mono',monospace;">fr.yahoo.com</div>
+        <div style="margin-top:4px;"><span style="background:rgba(255,176,32,.15);color:#FFB020;padding:2px 7px;border-radius:100px;font-size:10px;">Pub</span></div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button style="flex:1;padding:8px;background:#2a2a35;color:#8B90A8;border:1px solid rgba(255,255,255,.1);border-radius:8px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;">Voir les flux</button>
+        <button style="padding:8px 16px;background:#fff;color:#111;border:none;border-radius:8px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;">Rapport</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding-top:200px;">
+    <div style="width:32px;height:2px;background:var(--color-border-secondary);border-radius:1px;"></div>
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 9h10M10 5l4 4-4 4" stroke="var(--color-text-tertiary)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div style="font-size:10px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.07em;">Cible</div>
+  </div>
+
+  <div class="col">
+    <div class="col-label">Ce que tu aurais dû voir — design validé</div>
+    <div class="popup">
+      <div class="popup-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="logo-mark">
+            <svg width="12" height="12" viewBox="0 0 19 19" fill="none"><path d="M9.5 2L3 5v5c0 3.5 2.8 6.8 6.5 7.8C13.2 16.8 16 13.5 16 10V5L9.5 2z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><circle cx="9.5" cy="9.5" r="2.5" fill="white" opacity=".85"/></svg>
+          </div>
+          <span class="popup-title">Trackshield</span>
+        </div>
+        <div class="url-chip">fr.yahoo.com</div>
+      </div>
+
+      <div class="popup-body">
+        <div class="score-row">
+          <div class="ring-wrap">
+            <svg width="76" height="76" viewBox="0 0 76 76">
+              <circle cx="38" cy="38" r="32" fill="none" stroke="rgba(31,204,122,.12)" stroke-width="7"/>
+              <circle cx="38" cy="38" r="32" fill="none" stroke="#1FCC7A" stroke-width="7" stroke-dasharray="186 15" stroke-linecap="round"/>
+            </svg>
+            <div class="ring-letter" style="color:#1FCC7A;">A</div>
+          </div>
+          <div style="flex:1;">
+            <div class="score-text">Score RGPD : A</div>
+            <div class="score-sub">Aucune collecte problématique.</div>
+            <div class="badges">
+              <span class="badge b-warn">3 trackers</span>
+              <span class="badge b-ok">0 PII</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ok-box">
+          <svg class="ok-check" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.5 9l3.5 4 7.5-8" stroke="#1FCC7A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div style="font-size:11.5px;color:#1FCC7A;font-weight:500;">Ce site respecte votre vie privée</div>
+        </div>
+
+        <div class="section-label" style="margin-top:13px;">Trackers actifs</div>
+
+        <div class="tracker-row">
+          <div class="co" style="background:rgba(234,67,53,.12);color:#EA4335;">G</div>
+          <div class="tracker-info">
+            <div class="tracker-name">Google Analytics</div>
+            <div class="tracker-domain">region1.google-analytics.com</div>
+          </div>
+          <span class="badge b-blue">Analytique</span>
+        </div>
+
+        <div class="tracker-row">
+          <div class="co" style="background:rgba(0,74,153,.15);color:#5BA8FF;">Y</div>
+          <div class="tracker-info">
+            <div class="tracker-name">Yahoo Analytics</div>
+            <div class="tracker-domain">geo.yahoo.com</div>
+          </div>
+          <span class="badge b-blue">Analytique</span>
+        </div>
+
+        <div class="tracker-row" style="border-bottom:none;">
+          <div class="co" style="background:rgba(0,74,153,.15);color:#5BA8FF;">Y</div>
+          <div class="tracker-info">
+            <div class="tracker-name">Yahoo</div>
+            <div class="tracker-domain">fr.yahoo.com</div>
+          </div>
+          <span class="badge b-warn">Pub</span>
+        </div>
+      </div>
+
+      <div class="popup-actions">
+        <button class="btn-primary">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 6.5C1 6.5 3 3 6.5 3S12 6.5 12 6.5 10 10 6.5 10 1 6.5 1 6.5z" stroke="white" stroke-width="1.2"/><circle cx="6.5" cy="6.5" r="2" stroke="white" stroke-width="1.2"/></svg>
+          Voir les flux
+        </button>
+        <button class="btn-ghost">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="1.5" y="1" width="9" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 4h5M3.5 6.5h5M3.5 9h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Rapport
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col" style="min-width:240px;">
+    <div class="col-label">Les 6 différences clés</div>
+    <div class="diff-list">
+      <div class="diff-item">
+        <div class="diff-dot" style="background:#FF3B5C;"></div>
+        <div>
+          <div class="diff-label">Header avec chip URL</div>
+          <div class="diff-sub">Logo bouclier blaugrana + "fr.yahoo.com" en pill monospace séparée — pas inline dans le titre</div>
+        </div>
+      </div>
+      <div class="diff-item">
+        <div class="diff-dot" style="background:#FF3B5C;"></div>
+        <div>
+          <div class="diff-label">Anneau score précis</div>
+          <div class="diff-sub">Arc SVG positionné à -90° avec stroke-dasharray calculé. La lettre est centrée dans l'anneau, pas à côté</div>
+        </div>
+      </div>
+      <div class="diff-item">
+        <div class="diff-dot" style="background:#FFB020;"></div>
+        <div>
+          <div class="diff-label">Encart "site sûr"</div>
+          <div class="diff-sub">Box verte avec checkmark SVG quand score A — absent dans ta version</div>
+        </div>
+      </div>
+      <div class="diff-item">
+        <div class="diff-dot" style="background:#FFB020;"></div>
+        <div>
+          <div class="diff-label">Logos entreprise (co)</div>
+          <div class="diff-sub">Cercle 30×30px avec initiale centrée et fond coloré par entreprise — pas "GO"/"YA" en texte brut sur fond bleu</div>
+        </div>
+      </div>
+      <div class="diff-item">
+        <div class="diff-dot" style="background:#FF3B5C;"></div>
+        <div>
+          <div class="diff-label">Bouton "Voir les flux"</div>
+          <div class="diff-sub">Fond #004D98 (bleu Barça) + icône œil SVG — pas un rectangle gris sans icône</div>
+        </div>
+      </div>
+      <div class="diff-item">
+        <div class="diff-dot" style="background:#FFB020;"></div>
+        <div>
+          <div class="diff-label">Bouton "Rapport"</div>
+          <div class="diff-sub">Style ghost (fond #1A1E2A + bordure) + icône document — pas un rectangle blanc plein</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

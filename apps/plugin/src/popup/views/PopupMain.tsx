@@ -4,7 +4,8 @@ import { PopupHeader } from '../components/layout/PopupHeader.js'
 import { ScoreBlock } from '../components/blocks/ScoreBlock.js'
 import { PiiBox } from '../components/blocks/PiiBox.js'
 import { TrackerRow } from '../components/domain/TrackerRow.js'
-import { useSessionStore } from '../stores/session.store.js'
+import { useSessionStore, selectUniquePiis } from '../stores/session.store.js'
+import { OkBox } from '../components/blocks/OkBox.js'
 
 interface PopupMainProps {
   onNavigate: (view: View) => void
@@ -12,6 +13,7 @@ interface PopupMainProps {
 
 export default function PopupMain({ onNavigate }: PopupMainProps): JSX.Element {
   const { trackers, piis, score, currentDomain } = useSessionStore()
+  const uniquePiis = selectUniquePiis(piis)
 
   const hasAlerts = piis.length > 0
   const grade = score?.grade ?? 'A'
@@ -25,9 +27,10 @@ export default function PopupMain({ onNavigate }: PopupMainProps): JSX.Element {
           grade={grade}
           score={scoreValue}
           trackerCount={trackers.length}
-          piiCount={piis.length}
+          piiCount={uniquePiis.length}
         />
         {hasAlerts && <PiiBox detections={piis} />}
+        {piis.length === 0 && <OkBox />}
         {trackers.length > 0 && (
           <>
             <div className="text-[10px] font-semibold text-white/40 uppercase tracking-wider mb-2">
@@ -45,14 +48,23 @@ export default function PopupMain({ onNavigate }: PopupMainProps): JSX.Element {
         <button
           onClick={() => onNavigate('flux')}
           className="flex-1 flex items-center justify-center gap-1.5 text-[11px] font-medium py-2 rounded-lg text-white"
-          style={{ background: 'linear-gradient(135deg, #004D98, #A50044)' }}
+          style={{ background: '#004D98' }}
         >
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M1 6.5C1 6.5 3 3 6.5 3S12 6.5 12 6.5 10 10 6.5 10 1 6.5 1 6.5z" stroke="white" strokeWidth="1.2"/>
+            <circle cx="6.5" cy="6.5" r="2" stroke="white" strokeWidth="1.2"/>
+          </svg>
           Voir les flux
         </button>
         <button
           onClick={() => onNavigate('report')}
-          className="flex items-center justify-center gap-1.5 text-[11px] font-medium py-2 px-3 rounded-lg text-white/60 border border-border"
+          className="flex items-center justify-center gap-1.5 text-[11px] font-medium py-2 px-3 rounded-lg"
+          style={{ background: '#1A1E2A', color: '#8B90A8', border: '1px solid rgba(255,255,255,0.11)' }}
         >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <rect x="1.5" y="1" width="9" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.2"/>
+            <path d="M3.5 4h5M3.5 6.5h5M3.5 9h3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+          </svg>
           Rapport
         </button>
       </div>

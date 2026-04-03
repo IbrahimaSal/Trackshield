@@ -1,6 +1,16 @@
 import { create } from 'zustand'
 import type { TrackerMatch, PiiDetection, RgpdScore } from '@trackshield/shared-types'
 
+/** Déduplique les détections par maskedValue + destination. */
+export function selectUniquePiis(piis: PiiDetection[]): PiiDetection[] {
+  const seen = new Map<string, PiiDetection>()
+  for (const pii of piis) {
+    const key = `${pii.maskedValue}|${pii.destination}`
+    if (!seen.has(key)) seen.set(key, pii)
+  }
+  return Array.from(seen.values())
+}
+
 interface SessionState {
   currentDomain: string | null
   trackers: TrackerMatch[]

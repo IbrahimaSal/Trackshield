@@ -5,7 +5,28 @@ interface PiiBoxProps {
   detections: PiiDetection[]
 }
 
+interface GroupedPii {
+  pii: PiiDetection
+  count: number
+}
+
+function deduplicatePiis(detections: PiiDetection[]): GroupedPii[] {
+  const map = new Map<string, GroupedPii>()
+  for (const pii of detections) {
+    const key = `${pii.maskedValue}|${pii.destination}`
+    const existing = map.get(key)
+    if (existing) {
+      existing.count++
+    } else {
+      map.set(key, { pii, count: 1 })
+    }
+  }
+  return Array.from(map.values()).sort((a, b) => b.count - a.count)
+}
+
 export function PiiBox({ detections }: PiiBoxProps): JSX.Element {
+  const grouped = deduplicatePiis(detections)
+
   return (
     <div
       className="rounded-lg p-2.5 mb-3"
@@ -22,8 +43,13 @@ export function PiiBox({ detections }: PiiBoxProps): JSX.Element {
         Données personnelles transmises
       </div>
       <div className="flex flex-col gap-1.5">
-        {detections.map((d, i) => (
-          <PiiLine key={i} detection={d} />
+        {grouped.map(({ pii, count }, i) => (
+          <div key={i} className="flex items-center justify-between">
+            <PiiLine detection={pii} />
+            {count > 1 && (
+              <span className="text-[9px] text-white/40 ml-2 shrink-0">×{count}</span>
+            )}
+          </div>
         ))}
       </div>
     </div>

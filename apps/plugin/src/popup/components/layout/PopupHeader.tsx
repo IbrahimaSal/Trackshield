@@ -11,7 +11,8 @@ export function PopupHeader({ url }: PopupHeaderProps): JSX.Element {
           style={{ background: 'linear-gradient(135deg, #004D98, #A50044)' }}
         >
           <svg width="12" height="12" viewBox="0 0 19 19" fill="none">
-            <path d="M9.5 2L3 5v5c0 3.5 2.8 6.8 6.5 7.8C13.2 16.8 16 13.5 16 10V5L9.5 2z" stroke="white" strokeWidth="1.6" strokeLinejoin="round" />
+            <path d="M9.5 2L3 5v5c0 3.5 2.8 6.8 6.5 7.8C13.2 16.8 16 13.5 16 10V5L9.5 2z" stroke="white" strokeWidth="1.5" strokeLinejoin="round" />
+            <circle cx="9.5" cy="9.5" r="2.5" fill="white" opacity=".85" />
           </svg>
         </div>
         <span className="text-[13px] font-semibold">Trackshield</span>
