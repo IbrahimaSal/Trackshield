@@ -1,7 +1,21 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { useSessionStore } from '../../stores/session.store.js'
 import FluxView from '../FluxView.js'
-import type { PiiDetection } from '@trackshield/shared-types'
+import type { PiiDetection, TrackerMatch } from '@trackshield/shared-types'
+
+const TRACKER: TrackerMatch = {
+  domain: 'google-analytics.com',
+  category: 'analytics',
+  company: 'Google Analytics',
+  requestCount: 1,
+}
+
+const TRACKER_FB: TrackerMatch = {
+  domain: 'pixel.facebook.com',
+  category: 'advertising',
+  company: 'Meta',
+  requestCount: 3,
+}
 
 const PII_EMAIL: PiiDetection = {
   type: 'EMAIL',
@@ -31,12 +45,41 @@ beforeEach(() => {
   mockNavigate.mockReset()
 })
 
-describe('FluxView', () => {
-  it("affiche le message vide quand aucune PII n'est détectée", () => {
+describe('FluxView — état vide', () => {
+  it("affiche le message vide quand aucun tracker ni PII n'est détecté", () => {
     render(<FluxView onNavigate={mockNavigate} />)
-    expect(screen.getByText(/aucune donnée transmise détectée/i)).toBeInTheDocument()
+    expect(screen.getByText(/aucun flux détecté/i)).toBeInTheDocument()
   })
 
+  it("n'affiche pas le message vide quand des trackers sont présents", () => {
+    useSessionStore.setState({ trackers: [TRACKER] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.queryByText(/aucun flux détecté/i)).not.toBeInTheDocument()
+  })
+})
+
+describe('FluxView — section trackers', () => {
+  it("affiche le nom de l'entreprise du tracker", () => {
+    useSessionStore.setState({ trackers: [TRACKER] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.getByText('Google Analytics')).toBeInTheDocument()
+  })
+
+  it("affiche le domaine du tracker", () => {
+    useSessionStore.setState({ trackers: [TRACKER] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.getByText('google-analytics.com')).toBeInTheDocument()
+  })
+
+  it("affiche plusieurs trackers", () => {
+    useSessionStore.setState({ trackers: [TRACKER, TRACKER_FB] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.getByText('Google Analytics')).toBeInTheDocument()
+    expect(screen.getByText('Meta')).toBeInTheDocument()
+  })
+})
+
+describe('FluxView — section PIIs', () => {
   it("affiche la valeur masquée de chaque PII", () => {
     useSessionStore.setState({ piis: [PII_EMAIL, PII_PHONE] })
     render(<FluxView onNavigate={mockNavigate} />)
@@ -47,30 +90,16 @@ describe('FluxView', () => {
   it("groupe les PII par domaine destinataire", () => {
     useSessionStore.setState({ piis: [PII_EMAIL, PII_PHONE, PII_ID] })
     render(<FluxView onNavigate={mockNavigate} />)
-    // pixel.facebook.com doit apparaître une seule fois comme groupe
     const facebookHeaders = screen.getAllByText(/pixel\.facebook\.com/)
     expect(facebookHeaders.length).toBe(1)
-    // google-analytics.com doit aussi apparaître une fois
     const googleHeaders = screen.getAllByText(/google-analytics\.com/)
     expect(googleHeaders.length).toBe(1)
   })
 
-  it("affiche le domaine destinataire pour chaque groupe", () => {
-    useSessionStore.setState({ piis: [PII_ID] })
-    render(<FluxView onNavigate={mockNavigate} />)
-    expect(screen.getByText(/google-analytics\.com/)).toBeInTheDocument()
-  })
-
-  it("n'affiche pas le message vide quand des PII sont présentes", () => {
+  it("n'affiche pas le message vide quand des PIIs sont présentes", () => {
     useSessionStore.setState({ piis: [PII_EMAIL] })
     render(<FluxView onNavigate={mockNavigate} />)
-    expect(screen.queryByText(/aucune donnée transmise détectée/i)).not.toBeInTheDocument()
-  })
-
-  it("le bouton retour appelle onNavigate avec 'main'", () => {
-    render(<FluxView onNavigate={mockNavigate} />)
-    fireEvent.click(screen.getByText(/retour/i))
-    expect(mockNavigate).toHaveBeenCalledWith('main')
+    expect(screen.queryByText(/aucun flux détecté/i)).not.toBeInTheDocument()
   })
 
   it("affiche ×2 pour deux détections identiques vers la même destination", () => {
@@ -97,9 +126,16 @@ describe('FluxView', () => {
     const DUP_EMAIL: PiiDetection = { ...PII_EMAIL }
     useSessionStore.setState({ piis: [PII_PHONE, PII_EMAIL, DUP_EMAIL] })
     render(<FluxView onNavigate={mockNavigate} />)
-    // EMAIL est dupliqué (×2), il doit apparaître avant PHONE (pas de compteur)
     const container = screen.getByText('j••••@gmail.com').closest('[class]')!
     const phoneEl = screen.getByText('+336••••5678').closest('[class]')!
     expect(container.compareDocumentPosition(phoneEl)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+  })
+})
+
+describe('FluxView — navigation', () => {
+  it("le bouton retour appelle onNavigate avec 'main'", () => {
+    render(<FluxView onNavigate={mockNavigate} />)
+    fireEvent.click(screen.getByText(/retour/i))
+    expect(mockNavigate).toHaveBeenCalledWith('main')
   })
 })
