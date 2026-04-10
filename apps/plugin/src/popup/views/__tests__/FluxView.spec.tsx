@@ -38,6 +38,13 @@ const PII_ID: PiiDetection = {
   timestamp: 3000,
 }
 
+const PII_LOC: PiiDetection = {
+  type: 'LOC',
+  maskedValue: 'Paris••••',
+  destination: 'google-analytics.com',
+  timestamp: 3000,
+}
+
 const mockNavigate = vi.fn()
 
 beforeEach(() => {
@@ -88,7 +95,7 @@ describe('FluxView — section PIIs', () => {
   })
 
   it("groupe les PII par domaine destinataire", () => {
-    useSessionStore.setState({ piis: [PII_EMAIL, PII_PHONE, PII_ID] })
+    useSessionStore.setState({ piis: [PII_EMAIL, PII_PHONE, PII_LOC] })
     render(<FluxView onNavigate={mockNavigate} />)
     const facebookHeaders = screen.getAllByText(/pixel\.facebook\.com/)
     expect(facebookHeaders.length).toBe(1)
@@ -100,6 +107,25 @@ describe('FluxView — section PIIs', () => {
     useSessionStore.setState({ piis: [PII_EMAIL] })
     render(<FluxView onNavigate={mockNavigate} />)
     expect(screen.queryByText(/aucun flux détecté/i)).not.toBeInTheDocument()
+  })
+
+  it("n'affiche pas les PIIs de type ID_PUB", () => {
+    useSessionStore.setState({ piis: [PII_ID] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.queryByText('ga-••••••••')).not.toBeInTheDocument()
+  })
+
+  it("affiche le message vide quand seules des PIIs de type ID_PUB sont présentes", () => {
+    useSessionStore.setState({ piis: [PII_ID] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.getByText(/aucun flux détecté/i)).toBeInTheDocument()
+  })
+
+  it("affiche les PIIs EMAIL et TEL mais pas ID_PUB", () => {
+    useSessionStore.setState({ piis: [PII_EMAIL, PII_ID] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.getByText('j••••@gmail.com')).toBeInTheDocument()
+    expect(screen.queryByText('ga-••••••••')).not.toBeInTheDocument()
   })
 
   it("affiche ×2 pour deux détections identiques vers la même destination", () => {

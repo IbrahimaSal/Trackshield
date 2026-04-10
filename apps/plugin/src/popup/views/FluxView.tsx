@@ -58,10 +58,13 @@ function groupByDestination(piis: PiiDetection[]): Map<string, GroupedEntry[]> {
   return result
 }
 
+const INTELLIGIBLE_TYPES = new Set<string>(['EMAIL', 'TEL', 'LOC'])
+
 export default function FluxView({ onNavigate }: FluxViewProps): JSX.Element {
   const { trackers, piis, currentDomain } = useSessionStore()
-  const grouped = groupByDestination(piis)
-  const isEmpty = trackers.length === 0 && piis.length === 0
+  const visiblePiis = piis.filter(p => INTELLIGIBLE_TYPES.has(p.type))
+  const grouped = groupByDestination(visiblePiis)
+  const isEmpty = trackers.length === 0 && visiblePiis.length === 0
 
   return (
     <PopupShell>
@@ -105,7 +108,7 @@ export default function FluxView({ onNavigate }: FluxViewProps): JSX.Element {
               </>
             )}
 
-            {piis.length > 0 && (
+            {visiblePiis.length > 0 && (
               <>
                 <div style={{ fontSize: 10, fontWeight: 600, color: '#4E5368', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 8 }}>
                   Données personnelles transmises

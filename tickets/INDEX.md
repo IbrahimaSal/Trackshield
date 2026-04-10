@@ -5,9 +5,10 @@
 
 | ID | Titre | Module | Checklist | Priorité | Statut |
 |---|---|---|---|---|---|
-| [TS-020](TS-020.md) | Plugin — Détection via localStorage et cookies first-party | Plugin / Background | — | P1 | À faire |
+| [TS-020](TS-020.md) | Plugin — Détection via localStorage et cookies first-party | Plugin / Background | — | P1 | Fait |
 | [TS-022](TS-022.md) | Plugin — Détection cookies tiers dans headers réseau | Plugin / Background | — | P1 | À faire |
 | [TS-021](TS-021.md) | Cadrage — Détection de fingerprinting navigateur | Plugin / Background | — | P2 | Cadrage requis |
+| [TS-024](TS-024.md) | Cadrage — Détection des trackers CNAME-cloakés | Plugin / Background | — | P2 | Cadrage requis |
 | [TS-001](TS-001.md) | API NestJS — PrismaService (connexion PostgreSQL) | API NestJS | 8.6 | P0 | Fait |
 | [TS-004](TS-004.md) | API NestJS — Module Events + câblage AppModule | API NestJS | 8.4, 8.1 | P0 | Fait |
 | [TS-007](TS-007.md) | Plugin — Vue Trackers Live (LiveFeed) | Plugin / Vues | 3.2 | P0 | Fait |
