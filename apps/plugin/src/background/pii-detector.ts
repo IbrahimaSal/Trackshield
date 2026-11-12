@@ -1,5 +1,21 @@
 import type { PiiDetection, PiiType } from '@trackshield/shared-types'
 import { KNOWN_PARAMS } from './known-params.js'
+import { KNOWN_COOKIES } from './known-cookies.js'
+
+const PII_CONTEXT: Partial<Record<PiiType, { label: string; description: string }>> = {
+  EMAIL: {
+    label: 'Votre adresse e-mail',
+    description: "Permet de vous identifier sur d'autres sites et applis, même sans compte. Vous pourrez recevoir des publicités ciblées liées à cette visite.",
+  },
+  TEL: {
+    label: 'Votre numéro de téléphone',
+    description: 'Peut être utilisé pour vous contacter par SMS promotionnel ou vous cibler sur WhatsApp et Instagram.',
+  },
+  LOC: {
+    label: 'Votre localisation',
+    description: 'Votre position géographique est transmise. Elle peut servir à personnaliser les publicités selon votre ville ou quartier.',
+  },
+}
 
 // Regex heuristiques — utilisées uniquement si aucun paramètre connu ne match
 const PII_PATTERNS: Record<PiiType, RegExp> = {
@@ -84,14 +100,48 @@ export class PiiDetector {
         const rawValue = match[0]
         const isKnown = knownValues !== undefined && knownValues.size > 0 &&
           [...knownValues].some((v) => rawValue.includes(v) || v.includes(rawValue))
+        const ctx = PII_CONTEXT[type as PiiType]
         detections.push({
           type: type as PiiType,
           maskedValue: mask(rawValue, type as PiiType),
           destination,
           timestamp: Date.now(),
           ...(isKnown ? { certainty: 'high' as const, source: 'form' as const } : {}),
+          ...(ctx ? { label: ctx.label, description: ctx.description } : {}),
         })
       }
+    }
+
+    return detections
+  }
+
+  scanHeaders(
+    headers: chrome.webRequest.HttpHeader[],
+    destination: string,
+  ): PiiDetection[] {
+    const detections: PiiDetection[] = []
+
+    const cookieHeader = headers.find(h => h.name.toLowerCase() === 'cookie')
+    if (!cookieHeader?.value) return detections
+
+    for (const pair of cookieHeader.value.split(';')) {
+      const eqIdx = pair.indexOf('=')
+      if (eqIdx === -1) continue
+      const name = pair.slice(0, eqIdx).trim()
+      const value = pair.slice(eqIdx + 1).trim()
+      const entry = KNOWN_COOKIES[name]
+      if (!entry) continue
+
+      detections.push({
+        type: entry.type,
+        maskedValue: maskParamValue(value),
+        destination,
+        timestamp: Date.now(),
+        certainty: 'high',
+        source: 'cookie',
+        label: entry.label,
+        description: entry.description,
+      })
     }
 
     return detections

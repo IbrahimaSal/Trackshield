@@ -14,6 +14,20 @@ const storageTrackers = new Map<number, StorageTracker>()
 
 void trackerMatcher.init()
 
+chrome.webRequest.onBeforeSendHeaders.addListener(
+  (details) => {
+    if (!details.tabId || details.tabId < 0) return
+    const destination = new URL(details.url).hostname
+    const cookiePiis = piiDetector.scanHeaders(details.requestHeaders ?? [], destination)
+    if (cookiePiis.length > 0) {
+      badgeManager.update(details.tabId, { piis: cookiePiis, tracker: null })
+      syncClient.enqueue({ piis: cookiePiis, tracker: null, url: details.url, tabId: details.tabId })
+    }
+  },
+  { urls: ['<all_urls>'] },
+  ['requestHeaders'],
+)
+
 chrome.webRequest.onBeforeRequest.addListener(
   (details) => {
     if (!details.tabId || details.tabId < 0) return
