@@ -4,7 +4,7 @@ titre: Dépôt — sauver les 5 commits orphelins et créer le remote GitHub
 module: Dépôt / Git
 checklist: —
 priorité: P0 — CRITIQUE
-statut: À faire
+statut: Fait
 auteur: Plan d'action freelance (dc/PLAN_ACTION_PROJETS.md)
 ---
 
@@ -64,13 +64,48 @@ git push -u origin main
 
 ## Critères d'acceptation
 
-- [ ] `git branch --show-current` renvoie `main`, plus de `HEAD` détaché
-- [ ] `git log --oneline main` contient les 5 commits, du plus ancien `a4a6d79` au plus récent `29e646e`
-- [ ] Les 11 fichiers en cours sont soit commités, soit rangés dans un stash nommé, soit supprimés sciemment
-- [ ] `git remote -v` renvoie un remote `origin` sur GitHub
-- [ ] `git push` passe et le dépôt est visible sur github.com/IbrahimaSal
-- [ ] `.gitignore` couvre toujours `.env` et `.env.local` (vérifié : seul `.env.example` est suivi)
+- [x] `git branch --show-current` renvoie `main`, plus de `HEAD` détaché
+- [x] `git log --oneline main` contient les 5 commits, du plus ancien `18315c9` au plus récent `b2617f1`
+- [x] Les 11 fichiers en cours sont commités, en 3 commits thématiques
+- [x] `git remote -v` renvoie un remote `origin` sur GitHub
+- [x] `git push` passe et le dépôt est visible sur github.com/IbrahimaSal/Trackshield
+- [x] `.gitignore` couvre toujours `.env` et `.env.local` (vérifié : seul `.env.example` est suivi)
 
 ## Dépend de
 
 Aucune dépendance. C'est le premier ticket à traiter, avant tout développement.
+
+## Réalisé le 12 novembre 2026
+
+Dépôt public : <https://github.com/IbrahimaSal/Trackshield>, branche par défaut `main`,
+28 commits publiés, `develop` poussée également.
+
+Déroulé :
+
+1. `git checkout -B main` : `main` rattrape `HEAD`, les 5 commits orphelins sont dans une branche.
+2. Les 11 fichiers en cours sont commités en 3 commits : détection des cookies tiers (TS-022),
+   affichage du label et de la description dans FluxView, tickets du jalon v0.
+3. `.claude/` est retiré de l'ensemble de l'historique (`git filter-branch --index-filter`,
+   5 commits devenus vides élagués) puis ajouté au `.gitignore` avec `CLAUDE.md` : ce sont des
+   outils de travail locaux, hors périmètre d'un dépôt public. Le répertoire reste sur le disque.
+4. Le commit initial généré par GitHub (`3c91a23`, README de 2 lignes et `.gitignore` Python) est
+   fusionné plutôt qu'écrasé, en conservant le `.gitignore` du projet. Le push est donc en
+   fast-forward, sans `--force`.
+
+Contrôles avant publication : aucun `.env` dans l'historique (seul `.env.example`, avec des
+valeurs `change-me-in-production`), aucun token ni clé privée, les seules données personnelles
+sont des fixtures de test (`john.doe@gmail.com`, `0612345678`). `pnpm turbo typecheck` passe sur
+6 packages, `pnpm turbo test` sur 203 tests (plugin 132, API 62, tracker-lists 9).
+
+**La réécriture d'historique a changé tous les hachages.** Les SHA cités plus haut dans ce ticket
+sont ceux d'avant la purge. Correspondance pour les 5 commits sauvés :
+
+| Avant | Après |
+|---|---|
+| `a4a6d79` | `18315c9` |
+| `7294fb5` | `23b9155` |
+| `f1c3bb3` | `7556098` |
+| `f5a9cb0` | `b2b528e` |
+| `29e646e` | `b2617f1` |
+
+Reste de FREE-003 à traiter en priorité, le dépôt étant public sans README ni licence.

@@ -8,7 +8,7 @@
 
 | ID | Titre | Priorité | Effort | Statut |
 |---|---|---|---|---|
-| [FREE-001](FREE-001.md) | Dépôt — sauver les 5 commits orphelins et créer le remote GitHub | P0 — CRITIQUE | 30 min | À faire |
+| [FREE-001](FREE-001.md) | Dépôt — sauver les 5 commits orphelins et créer le remote GitHub | P0 — CRITIQUE | 30 min | Fait |
 | [FREE-002](FREE-002.md) | Jalon v0 — clôturer les 4 tickets restants et figer un périmètre démontrable | P0 | 14 h | À faire |
 | [FREE-003](FREE-003.md) | Dépôt — README public, captures d'écran et licence | P1 | 2 h | À faire |
 
