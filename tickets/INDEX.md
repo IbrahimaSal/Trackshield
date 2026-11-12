@@ -1,12 +1,28 @@
 # Tickets Trackshield
 
-> Dernière mise à jour par `/progress` — 2026-04-06
-> Score global : **66/66 (100%)** — checklist de base complète
+> Dernière mise à jour par `/progress` — 2026-04-10
+> Score global : **66/66 (100%)** — checklist de base complète · 3 tickets produit actifs (TS-022, TS-025, BUG-002)
+> Jalon v0 ajouté le 2026-11-12 depuis `dc/PLAN_ACTION_PROJETS.md` : objectif publication GitHub et v0 démontrable.
+
+## Jalon v0 — publication (plan d'action freelance)
+
+| ID | Titre | Priorité | Effort | Statut |
+|---|---|---|---|---|
+| [FREE-001](FREE-001.md) | Dépôt — sauver les 5 commits orphelins et créer le remote GitHub | P0 — CRITIQUE | 30 min | À faire |
+| [FREE-002](FREE-002.md) | Jalon v0 — clôturer les 4 tickets restants et figer un périmètre démontrable | P0 | 14 h | À faire |
+| [FREE-003](FREE-003.md) | Dépôt — README public, captures d'écran et licence | P1 | 2 h | À faire |
+
+Ordre de traitement : **FREE-001**, puis **TS-022 → TS-026 → TS-025 → BUG-002**, puis **FREE-003**.
+Hors v0 : déploiement cloud, TS-021 (fingerprinting), TS-024 (CNAME-cloaking).
+
+## Tickets produit
 
 | ID | Titre | Module | Checklist | Priorité | Statut |
 |---|---|---|---|---|---|
 | [TS-020](TS-020.md) | Plugin — Détection via localStorage et cookies first-party | Plugin / Background | — | P1 | Fait |
+| [TS-026](TS-026.md) | Plugin — Afficher les trackers avec un nom lisible, une catégorie et une description | Plugin / Vues + Background | — | P0 — CRITIQUE | À faire |
 | [TS-022](TS-022.md) | Plugin — Détection cookies tiers dans headers réseau | Plugin / Background | — | P1 | À faire |
+| [TS-025](TS-025.md) | Plugin — Enrichir les détections PII avec un contexte lisible | Plugin / Background | — | P1 | À faire |
 | [TS-021](TS-021.md) | Cadrage — Détection de fingerprinting navigateur | Plugin / Background | — | P2 | Cadrage requis |
 | [TS-024](TS-024.md) | Cadrage — Détection des trackers CNAME-cloakés | Plugin / Background | — | P2 | Cadrage requis |
 | [TS-001](TS-001.md) | API NestJS — PrismaService (connexion PostgreSQL) | API NestJS | 8.6 | P0 | Fait |
