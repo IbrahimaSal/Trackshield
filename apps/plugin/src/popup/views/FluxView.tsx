@@ -121,11 +121,23 @@ export default function FluxView({ onNavigate }: FluxViewProps): JSX.Element {
                       </div>
                       <div className="flex flex-col pl-2" style={{ gap: 4, borderLeft: '1px solid rgba(255,255,255,.06)' }}>
                         {entries.map(({ pii, count }, i) => (
-                          <div key={i} className="flex items-center" style={{ gap: 8 }}>
-                            <MaskedValue value={pii.maskedValue} severity={PII_SEVERITY[pii.type]} />
-                            <PiiTag type={pii.type} />
-                            {count > 1 && (
-                              <span style={{ fontSize: 9, color: '#4E5368', marginLeft: 'auto' }}>×{count}</span>
+                          <div key={i} className="flex flex-col" style={{ gap: 2 }}>
+                            <div className="flex items-center" style={{ gap: 8 }}>
+                              <MaskedValue value={pii.maskedValue} severity={PII_SEVERITY[pii.type]} />
+                              <PiiTag type={pii.type} />
+                              {count > 1 && (
+                                <span style={{ fontSize: 9, color: '#4E5368', marginLeft: 'auto' }}>×{count}</span>
+                              )}
+                            </div>
+                            {pii.label && (
+                              <div style={{ fontSize: 10, fontWeight: 500, color: '#C8CAD8' }}>
+                                {pii.label}
+                              </div>
+                            )}
+                            {pii.description && (
+                              <div style={{ fontSize: 9, color: '#4E5368', lineHeight: 1.4 }}>
+                                {pii.description}
+                              </div>
                             )}
                           </div>
                         ))}

@@ -158,6 +158,46 @@ describe('FluxView — section PIIs', () => {
   })
 })
 
+describe('FluxView — labels et descriptions', () => {
+  it("affiche le label de la PII quand il est présent", () => {
+    const pii: PiiDetection = { ...PII_EMAIL, label: 'Votre adresse e-mail' }
+    useSessionStore.setState({ piis: [pii] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.getByText('Votre adresse e-mail')).toBeInTheDocument()
+  })
+
+  it("affiche la description de la PII quand elle est présente", () => {
+    const pii: PiiDetection = {
+      ...PII_EMAIL,
+      label: 'Votre adresse e-mail',
+      description: "Permet de vous identifier sur d'autres sites.",
+    }
+    useSessionStore.setState({ piis: [pii] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.getByText(/Permet de vous identifier/i)).toBeInTheDocument()
+  })
+
+  it("affiche la valeur masquée même sans label", () => {
+    useSessionStore.setState({ piis: [PII_EMAIL] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.getByText('j••••@gmail.com')).toBeInTheDocument()
+  })
+
+  it("affiche le label pour une PII TEL", () => {
+    const pii: PiiDetection = { ...PII_PHONE, label: 'Votre numéro de téléphone' }
+    useSessionStore.setState({ piis: [pii] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.getByText('Votre numéro de téléphone')).toBeInTheDocument()
+  })
+
+  it("affiche le label pour une PII LOC", () => {
+    const pii: PiiDetection = { ...PII_LOC, label: 'Votre localisation' }
+    useSessionStore.setState({ piis: [pii] })
+    render(<FluxView onNavigate={mockNavigate} />)
+    expect(screen.getByText('Votre localisation')).toBeInTheDocument()
+  })
+})
+
 describe('FluxView — navigation', () => {
   it("le bouton retour appelle onNavigate avec 'main'", () => {
     render(<FluxView onNavigate={mockNavigate} />)
